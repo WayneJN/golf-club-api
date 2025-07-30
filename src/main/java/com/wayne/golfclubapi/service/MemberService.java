@@ -1,49 +1,51 @@
-package com.yourorg.golfclubapi.service;
+package com.wayne.golfclubapi.service;
 
-import com.yourorg.golfclubapi.entity.Member;
-import com.yourorg.golfclubapi.repository.MemberRepository;
+import com.wayne.golfclubapi.entity.Member;
+import com.wayne.golfclubapi.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Business logic around Member operations.
- */
 @Service
 public class MemberService {
 
-    private final MemberRepository repo;
+    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository repo) {
-        this.repo = repo;
+    @Autowired
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
-    /**
-     * Fetch all members.
-     */
-    public List<Member> getAll() {
-        return repo.findAll();
+    public List<Member> getAllMembers() {
+        return memberRepository.findAll();
     }
 
-    /**
-     * Find one by id.
-     */
-    public Optional<Member> getById(Long id) {
-        return repo.findById(id);
+    public Optional<Member> getMemberById(Long id) {
+        return memberRepository.findById(id);
     }
 
-    /**
-     * Create or update a member.
-     */
-    public Member save(Member m) {
-        return repo.save(m);
+    public Member createMember(Member member) {
+        return memberRepository.save(member);
     }
 
-    /**
-     * Delete by id.
-     */
-    public void delete(Long id) {
-        repo.deleteById(id);
+    public Optional<Member> updateMember(Long id, Member details) {
+        return memberRepository.findById(id)
+                .map(existing -> {
+                    existing.setName(details.getName());
+                    existing.setEmail(details.getEmail());
+                    existing.setMembershipStartDate(details.getMembershipStartDate());
+                    return memberRepository.save(existing);
+                });
+    }
+
+    public boolean deleteMember(Long id) {
+        return memberRepository.findById(id)
+                .map(member -> {
+                    memberRepository.delete(member);
+                    return true;
+                })
+                .orElse(false);
     }
 }

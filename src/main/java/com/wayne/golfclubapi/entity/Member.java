@@ -1,4 +1,4 @@
-package com.yourorg.golfclubapi.entity;
+package com.wayne.golfclubapi.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
