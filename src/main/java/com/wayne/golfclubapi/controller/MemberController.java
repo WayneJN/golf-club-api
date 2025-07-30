@@ -1,4 +1,4 @@
-package com.yourorg.golfclubapi.controller;
+package com.wayne.golfclubapi.controller;
 
 import com.yourorg.golfclubapi.entity.Member;
 import com.yourorg.golfclubapi.service.MemberService;
