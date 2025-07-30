@@ -1,4 +1,3 @@
-// src/main/java/com/yourorg/golfclubapi/controller/ScoreController.java
 package com.wayne.golfclubapi.controller;
 
 import com.wayne.golfclubapi.entity.Score;
@@ -21,8 +20,9 @@ public class ScoreController {
     }
 
     @GetMapping
-    public List<Score> getAllScores() {
-        return scoreService.getAllScores();
+    public ResponseEntity<List<Score>> getAllScores() {
+        List<Score> list = scoreService.getAllScores();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
@@ -33,8 +33,9 @@ public class ScoreController {
     }
 
     @PostMapping
-    public Score createScore(@RequestBody Score score) {
-        return scoreService.createScore(score);
+    public ResponseEntity<Score> createScore(@RequestBody Score score) {
+        Score saved = scoreService.createScore(score);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -54,4 +55,15 @@ public class ScoreController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
+
+    @GetMapping(params = "tournamentId")
+    public ResponseEntity<List<Score>> byTournament(@RequestParam Long tournamentId) {
+        return ResponseEntity.ok(scoreService.getByTournamentId(tournamentId));
+    }
+
+    @GetMapping(params = "memberId")
+    public ResponseEntity<List<Score>> byMember(@RequestParam Long memberId) {
+        return ResponseEntity.ok(scoreService.getByMemberId(memberId));
+    }
+
 }

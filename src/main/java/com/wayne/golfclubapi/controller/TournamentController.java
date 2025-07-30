@@ -4,6 +4,7 @@ package com.wayne.golfclubapi.controller;
 import com.wayne.golfclubapi.entity.Tournament;
 import com.wayne.golfclubapi.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,10 @@ public class TournamentController {
     }
 
     @GetMapping
-    public List<Tournament> getAllTournaments() {
-        return tournamentService.getAllTournaments();
+    public ResponseEntity<List<Tournament>> getAllTournaments() {
+        List<Tournament> list = tournamentService.getAllTournaments();
+        return ResponseEntity.ok(list);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Tournament> getTournamentById(@PathVariable Long id) {
         return tournamentService.getTournamentById(id)
@@ -33,8 +34,11 @@ public class TournamentController {
     }
 
     @PostMapping
-    public Tournament createTournament(@RequestBody Tournament tournament) {
-        return tournamentService.createTournament(tournament);
+    public ResponseEntity<Tournament> createTournament(
+            @RequestBody Tournament t
+    ) {
+        Tournament saved = tournamentService.createTournament(t);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -74,4 +78,14 @@ public class TournamentController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    // GET /api/tournaments?memberId=5
+    @GetMapping(params = "memberId")
+    public ResponseEntity<List<Tournament>> byMember(
+            @RequestParam Long memberId
+    ) {
+        return ResponseEntity.ok(
+                tournamentService.findByParticipant(memberId)
+        );
+    }
+
 }

@@ -35,7 +35,10 @@ public class MemberService {
                 .map(existing -> {
                     existing.setName(details.getName());
                     existing.setEmail(details.getEmail());
-                    existing.setMembershipStartDate(details.getMembershipStartDate());
+                    existing.setAddress(details.getAddress());
+                    existing.setPhone(details.getPhone());
+                    existing.setStartDate(details.getStartDate());
+                    existing.setDurationMonths(details.getDurationMonths());
                     return memberRepository.save(existing);
                 });
     }
