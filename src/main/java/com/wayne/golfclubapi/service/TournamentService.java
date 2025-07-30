@@ -1,4 +1,3 @@
-// src/main/java/com/yourorg/golfclubapi/service/TournamentService.java
 package com.wayne.golfclubapi.service;
 
 import com.wayne.golfclubapi.entity.Member;
@@ -80,4 +79,14 @@ public class TournamentService {
         }
         return Optional.empty();
     }
+
+    public List<Tournament> findByParticipant(Long memberId) {
+        return tournamentRepository.findAll((root, q, cb) ->
+                cb.isMember(
+                        memberRepository.getOne(memberId),
+                        root.get("participants")
+                )
+        );
+    }
+
 }

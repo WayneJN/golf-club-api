@@ -1,7 +1,7 @@
 package com.wayne.golfclubapi.controller;
 
-import com.yourorg.golfclubapi.entity.Member;
-import com.yourorg.golfclubapi.service.MemberService;
+import com.wayne.golfclubapi.entity.Member;
+import com.wayne.golfclubapi.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,31 +21,39 @@ public class MemberController {
         this.service = service;
     }
 
-    // GET /api/members
     @GetMapping
     public ResponseEntity<List<Member>> listAll() {
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(service.getAllMembers());
     }
 
-    // GET /api/members/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Member> getOne(@PathVariable Long id) {
-        return service.getById(id)
+        return service.getMemberById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST /api/members
     @PostMapping
     public ResponseEntity<Member> create(@RequestBody Member m) {
-        Member saved = service.save(m);
+        Member saved = service.createMember(m);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    // DELETE /api/members/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<Member> update(
+            @PathVariable Long id,
+            @RequestBody Member m
+    ) {
+        return service.updateMember(id, m)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        boolean deleted = service.deleteMember(id);
+        return deleted
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }
