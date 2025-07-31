@@ -1,11 +1,15 @@
 package com.wayne.golfclubapi.controller;
 
+import com.wayne.golfclubapi.data.MemberData;
 import com.wayne.golfclubapi.entity.Member;
 import com.wayne.golfclubapi.service.MemberService;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -31,6 +35,22 @@ public class MemberController {
         return service.getMemberById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Member>> searchMembers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tournamentStartDate
+    ) {
+        Specification<Member> spec = Specification.allOf();
+
+        if (name != null) spec = spec.and(MemberData.hasName(name));
+        if (phone != null) spec = spec.and(MemberData.hasPhone(phone));
+        if (tournamentStartDate != null) spec = spec.and(MemberData.hasTournamentStartDate(tournamentStartDate));
+
+        return ResponseEntity.ok(service.searchMembers(spec));
+
     }
 
     @PostMapping
