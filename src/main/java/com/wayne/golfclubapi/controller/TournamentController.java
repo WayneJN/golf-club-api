@@ -1,13 +1,14 @@
-
 package com.wayne.golfclubapi.controller;
 
 import com.wayne.golfclubapi.entity.Tournament;
 import com.wayne.golfclubapi.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,9 +24,9 @@ public class TournamentController {
 
     @GetMapping
     public ResponseEntity<List<Tournament>> getAllTournaments() {
-        List<Tournament> list = tournamentService.getAllTournaments();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Tournament> getTournamentById(@PathVariable Long id) {
         return tournamentService.getTournamentById(id)
@@ -34,9 +35,7 @@ public class TournamentController {
     }
 
     @PostMapping
-    public ResponseEntity<Tournament> createTournament(
-            @RequestBody Tournament t
-    ) {
+    public ResponseEntity<Tournament> createTournament(@RequestBody Tournament t) {
         Tournament saved = tournamentService.createTournament(t);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
@@ -47,7 +46,7 @@ public class TournamentController {
             @RequestBody Tournament tournamentDetails) {
 
         return tournamentService.updateTournament(id, tournamentDetails)
-                .map(updated -> ResponseEntity.ok(updated))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -78,14 +77,19 @@ public class TournamentController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    // GET /api/tournaments?memberId=5
+
     @GetMapping(params = "memberId")
-    public ResponseEntity<List<Tournament>> byMember(
-            @RequestParam Long memberId
-    ) {
-        return ResponseEntity.ok(
-                tournamentService.findByParticipant(memberId)
-        );
+    public ResponseEntity<List<Tournament>> byMember(@RequestParam Long memberId) {
+        return ResponseEntity.ok(tournamentService.findByParticipant(memberId));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Tournament>> searchTournaments(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Long memberId) {
+
+        List<Tournament> results = tournamentService.search(startDate, location, memberId);
+        return ResponseEntity.ok(results);
+    }
 }

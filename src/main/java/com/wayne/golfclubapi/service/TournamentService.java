@@ -1,12 +1,15 @@
 package com.wayne.golfclubapi.service;
 
+import com.wayne.golfclubapi.data.TournamentData;
 import com.wayne.golfclubapi.entity.Member;
 import com.wayne.golfclubapi.entity.Tournament;
 import com.wayne.golfclubapi.repository.MemberRepository;
 import com.wayne.golfclubapi.repository.TournamentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +61,7 @@ public class TournamentService {
 
     public Optional<Tournament> addMemberToTournament(Long tournamentId, Long memberId) {
         Optional<Tournament> optT = tournamentRepository.findById(tournamentId);
-        Optional<Member>    optM = memberRepository.findById(memberId);
+        Optional<Member> optM = memberRepository.findById(memberId);
 
         if (optT.isPresent() && optM.isPresent()) {
             Tournament t = optT.get();
@@ -70,7 +73,7 @@ public class TournamentService {
 
     public Optional<Tournament> removeMemberFromTournament(Long tournamentId, Long memberId) {
         Optional<Tournament> optT = tournamentRepository.findById(tournamentId);
-        Optional<Member>    optM = memberRepository.findById(memberId);
+        Optional<Member> optM = memberRepository.findById(memberId);
 
         if (optT.isPresent() && optM.isPresent()) {
             Tournament t = optT.get();
@@ -80,13 +83,19 @@ public class TournamentService {
         return Optional.empty();
     }
 
-    public List<Tournament> findByParticipant(Long memberId) {
-        return tournamentRepository.findAll((root, q, cb) ->
-                cb.isMember(
-                        memberRepository.getOne(memberId),
-                        root.get("participants")
-                )
-        );
+    public List<Tournament> search(LocalDate startDate, String location, Long memberId) {
+        Specification<Tournament> spec = Specification.<Tournament>unrestricted()
+                .and(TournamentData.hasStartDate(startDate))
+                .and(TournamentData.hasLocation(location))
+                .and(TournamentData.hasParticipant(memberId));
+
+        return tournamentRepository.findAll(spec);
     }
+
+    public List<Tournament> findByParticipant(Long memberId) {
+        return tournamentRepository.findAll(TournamentData.hasParticipant(memberId));
+    }
+
+
 
 }
