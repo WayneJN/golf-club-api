@@ -3,6 +3,7 @@ package com.wayne.golfclubapi.service;
 import com.wayne.golfclubapi.entity.Member;
 import com.wayne.golfclubapi.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public class MemberService {
 
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
+    }
+
+    public List<Member> searchMembers(Specification<Member> spec) {
+        return memberRepository.findAll(spec);
     }
 
     public Optional<Member> getMemberById(Long id) {

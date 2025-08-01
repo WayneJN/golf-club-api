@@ -2,6 +2,7 @@ package com.wayne.golfclubapi.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * Represents a golf club member.
@@ -13,6 +14,9 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;                    // Auto-generated primary key
+
+    @ManyToMany(mappedBy = "participants")
+    private Set<Tournament> tournaments;
 
     @Column(nullable = false)
     private String name;                // Full member name
