@@ -14,6 +14,8 @@ import java.util.Set;
 @Table(name = "tournaments")
 public class Tournament {
 
+    //For testing//
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,5 +62,6 @@ public class Tournament {
         this.entryFee = entryFee;
         this.cashPrize = cashPrize;
     }
+
 
 }
