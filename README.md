@@ -15,6 +15,7 @@ A Spring Boot RESTful API for managing golf club members, tournaments, and parti
 
 ```bash
 docker-compose up --build
+```
 
 ## xThis will:
 
@@ -28,11 +29,13 @@ docker-compose up --build
 
 ```bash
 docker-compose down
+```
 
 To remove volumes and start fresh:
 
 ```bash
 docker-compose down -v
+```
 
 
 ###🔍 Supported Search APIs
