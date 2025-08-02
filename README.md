@@ -17,7 +17,7 @@ A Spring Boot RESTful API for managing golf club members, tournaments, and parti
 docker-compose up --build
 ```
 
-## xThis will:
+## This will:
 
 - Build the Spring Boot application image
 
@@ -38,8 +38,8 @@ docker-compose down -v
 ```
 
 
-###🔍 Supported Search APIs
-##👥 Member Search
+### 🔍 Supported Search APIs
+## 👥 Member Search
 
 Endpoint: GET /api/members/search Query Parameters:
 
