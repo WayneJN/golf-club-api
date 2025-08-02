@@ -10,4 +10,6 @@ public class GolfClubApiApplication {
         SpringApplication.run(GolfClubApiApplication.class, args);
     }
 
+
+
 }
